@@ -42,10 +42,10 @@ const Header = () => {
           <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'/login'}>
             로그인
           </Button>
-          <Button as={'a'} fontSize={'sm'} fontWeight={600} color={'white'} href={'/register'}
-                  bg={'green.400'} _hover={{ bg: 'green.300' }}>
-            회원가입
-          </Button>
+          {/*<Button as={'a'} fontSize={'sm'} fontWeight={600} color={'white'} href={'/register'}*/}
+          {/*        bg={'green.400'} _hover={{ bg: 'green.300' }}>*/}
+          {/*  회원가입*/}
+          {/*</Button>*/}
         </Stack>
       </Flex>
 

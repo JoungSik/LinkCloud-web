@@ -24,7 +24,7 @@ const NewLinkBox = () => {
   const queryClient = useQueryClient();
 
   const { storedValue } = useLocalStorage('user');
-  const [link, setLink] = useState<LinkType>();
+  const [link, setLink] = useState<LinkType>({ name: 'naver', url: 'https://naver.com', tag_list: 'naver' });
 
   const mutation = useMutation(
     link => Link.createLink(storedValue.authorization, link), {
@@ -52,7 +52,7 @@ const NewLinkBox = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const onSubmit = () => {
-    mutation.mutate({ name: 'naver', url: 'https://naver.com', tag_list: 'naver' });
+    mutation.mutate(link);
   }
 
   return (

@@ -23,7 +23,7 @@ const authInstance = (jwt: string) => axios.create({
   }
 });
 
-const responseBody = (response: AxiosResponse<{}>) => response;
+const responseBody = (response: AxiosResponse<{}>) => response.data;
 
 export const requests = {
   get: (url: string, jwt: string) => authInstance(jwt).get(url).then(responseBody),

@@ -1,10 +1,15 @@
 import React, { useEffect } from 'react';
 import { Button, Flex, FormControl, FormLabel, Heading, Input, Stack, } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from 'react-query';
+import { useHistory } from 'react-router-dom';
 import { User } from '../api';
 import { UserType } from '../models/user.interface';
+import useLocalStorage from '../utils/storage';
 
 const Login = () => {
+  const history = useHistory();
+  const { storedValue, setStoredValue } = useLocalStorage('user');
+
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
@@ -14,10 +19,13 @@ const Login = () => {
         return { previousTodos };
       },
       onSuccess: (response, variables, context) => {
-        queryClient.setQueryData<UserType>('user', {
+        const user = {
           ...response.data,
           authorization: response.headers.authorization
-        });
+        };
+
+        setStoredValue(user);
+        queryClient.setQueryData<UserType>('user', user);
       },
       onError: (err, variables, context) => {
         if (context?.previousTodos) {
@@ -25,13 +33,17 @@ const Login = () => {
         }
       },
       onSettled: () => {
-        queryClient.invalidateQueries('user')
+        queryClient.invalidateQueries('user');
       },
     });
 
+  const onSubmit = () => mutation.mutate({ email: 'tjstlr2010@gmail.com', password: 'qwer1234' });
+
   useEffect(() => {
-    mutation.mutate({ email: 'tjstlr2010@gmail.com', password: 'qwer1234' });
-  }, []);
+    if (storedValue) {
+      history.replace('/');
+    }
+  }, [history, storedValue]);
 
   return (
     <Stack direction={{ base: 'column', md: 'row' }}>
@@ -47,7 +59,7 @@ const Login = () => {
             <Input type="password" />
           </FormControl>
           <Stack spacing={6}>
-            <Button colorScheme={'blue'} variant={'solid'} disabled={mutation.isLoading}>로그인</Button>
+            <Button colorScheme={'blue'} variant={'solid'} onClick={onSubmit}>로그인</Button>
           </Stack>
         </Stack>
       </Flex>

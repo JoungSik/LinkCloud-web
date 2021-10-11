@@ -1,3 +1,4 @@
+// https://chakra-templates.dev/navigation/navbar
 import {
   Box,
   Button,
@@ -10,8 +11,14 @@ import {
   useDisclosure
 } from '@chakra-ui/react';
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { useHistory } from 'react-router-dom';
+
+import useLocalStorage from '../utils/storage';
 
 const Header = () => {
+  const history = useHistory();
+
+  const { storedValue, setStoredValue } = useLocalStorage('user');
   const { isOpen, onToggle } = useDisclosure();
 
   return (
@@ -32,26 +39,18 @@ const Header = () => {
                 color={useColorModeValue('gray.800', 'white')}>
             Link Cloud
           </Text>
-
-          {/*<Flex display={{ base: 'none', md: 'flex' }} ml={10}>*/}
-          {/*  <DesktopNav />*/}
-          {/*</Flex>*/}
         </Flex>
 
         <Stack flex={{ base: 1, md: 0 }} justify={'flex-end'} direction={'row'} spacing={6}>
-          <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'/login'}>
-            로그인
-          </Button>
-          {/*<Button as={'a'} fontSize={'sm'} fontWeight={600} color={'white'} href={'/register'}*/}
-          {/*        bg={'green.400'} _hover={{ bg: 'green.300' }}>*/}
-          {/*  회원가입*/}
-          {/*</Button>*/}
+          {
+            storedValue ?
+              <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'}
+                      onClick={() => setStoredValue(null)}>로그아웃</Button> :
+              <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'}
+                      onClick={() => history.push('/login')}>로그인</Button>
+          }
         </Stack>
       </Flex>
-
-      {/*<Collapse in={isOpen} animateOpacity>*/}
-      {/*  <MobileNav />*/}
-      {/*</Collapse>*/}
     </Box>
   )
 };

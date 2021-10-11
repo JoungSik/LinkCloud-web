@@ -1,12 +1,4 @@
-import {
-  Box,
-  chakra,
-  Container,
-  Stack,
-  Text,
-  useColorModeValue,
-  VisuallyHidden,
-} from '@chakra-ui/react';
+import { Box, Container, Stack, Text, useColorModeValue, } from '@chakra-ui/react';
 
 const Footer = () => {
   return (

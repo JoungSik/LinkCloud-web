@@ -1,7 +1,25 @@
-import React, { useEffect } from 'react';
-import { Button, Flex, FormControl, FormLabel, Heading, Input, Stack, } from '@chakra-ui/react';
+import React, { useEffect, useRef } from 'react';
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { User } from '../api';
 import { UserType } from '../models/user.interface';
 import useLocalStorage from '../utils/storage';
@@ -9,9 +27,13 @@ import useLocalStorage from '../utils/storage';
 const Login = () => {
   const history = useHistory();
   const { storedValue, setStoredValue } = useLocalStorage('user');
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef<HTMLButtonElement>(null);
+
+  const { register, handleSubmit, formState: { errors } } = useForm<UserType>();
+  const onSubmit: SubmitHandler<UserType> = data => mutation.mutate(data);
 
   const queryClient = useQueryClient();
-
   const mutation = useMutation(
     userinfo => User.login({ email: userinfo.email, password: userinfo.password }), {
       onMutate: async (user: UserType) => {
@@ -27,17 +49,15 @@ const Login = () => {
         setStoredValue(user);
         queryClient.setQueryData<UserType>('user', user);
       },
-      onError: (err, variables, context) => {
-        if (context?.previousTodos) {
-          queryClient.setQueryData<UserType>('user', context.previousTodos);
-        }
+      onError: () => {
+        onOpen();
       },
       onSettled: () => {
         queryClient.invalidateQueries('user');
       },
     });
 
-  const onSubmit = () => mutation.mutate({ email: 'tjstlr2010@gmail.com', password: 'qwer1234' });
+  // const onSubmit = () =>
 
   useEffect(() => {
     if (storedValue) {
@@ -46,24 +66,43 @@ const Login = () => {
   }, [history, storedValue]);
 
   return (
-    <Stack direction={{ base: 'column', md: 'row' }}>
-      <Flex p={8} flex={1} align={'center'} justify={'center'}>
-        <Stack spacing={4} w={'full'} maxW={'md'}>
-          <Heading fontSize={'2xl'}>로그인</Heading>
-          <FormControl id="email">
-            <FormLabel>이메일</FormLabel>
-            <Input type="email" />
-          </FormControl>
-          <FormControl id="password">
-            <FormLabel>비밀번호</FormLabel>
-            <Input type="password" />
-          </FormControl>
-          <Stack spacing={6}>
-            <Button colorScheme={'blue'} variant={'solid'} onClick={onSubmit}>로그인</Button>
+    <>
+      <Stack direction={{ base: 'column', md: 'row' }}>
+        <Flex p={8} flex={1} align={'center'} justify={'center'}>
+          <Stack as={'form'} spacing={4} w={'full'} maxW={'md'} onSubmit={handleSubmit(onSubmit)}>
+            <Heading fontSize={'2xl'}>로그인</Heading>
+            <FormControl id="email" isInvalid={errors.email?.type === 'required' || errors.email?.type === 'pattern'}>
+              <FormLabel>이메일</FormLabel>
+              <Input type="email" {...register('email', {
+                required: true,
+                pattern: /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/i
+              })} />
+              <FormErrorMessage>{errors.email?.type === 'required' ? '이메일을 입력해주세요.' : '이메일 형식을 지켜주세요.'}</FormErrorMessage>
+            </FormControl>
+            <FormControl id="password" isInvalid={errors.password?.type === 'required'}>
+              <FormLabel>비밀번호</FormLabel>
+              <Input type="password" {...register('password', { required: true })} />
+              <FormErrorMessage>{errors.password && '비밀번호를 입력해주세요.'}</FormErrorMessage>
+            </FormControl>
+            <Stack spacing={6}>
+              <Button type={'submit'} colorScheme={'blue'} variant={'solid'}>로그인</Button>
+            </Stack>
           </Stack>
-        </Stack>
-      </Flex>
-    </Stack>
+        </Flex>
+      </Stack>
+      <AlertDialog motionPreset="slideInBottom" onClose={onClose} isOpen={isOpen} isCentered
+                   leastDestructiveRef={cancelRef}>
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader>로그인 실패</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>이메일과 비밀번호를 다시 확인해주세요.</AlertDialogBody>
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>확인</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 };
 

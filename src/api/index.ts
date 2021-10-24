@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { UserType } from '../models/user.interface';
 
-const baseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:3000/';
+const baseUrl = process.env.REACT_APP_SERVER_URL;
 
 const instance = axios.create({
   baseURL: baseUrl,

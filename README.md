@@ -4,6 +4,15 @@
 
 [프로젝트 개요](https://joungsik.github.io/post/2021_10_06/)
 
+--------------------------
+
+### 설치
+
+.env
+```dotenv
+REACT_APP_SERVER_URL=http://localhost:3000/
+```
+
 ------
 
 ## License

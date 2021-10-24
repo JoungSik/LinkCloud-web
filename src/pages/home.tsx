@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Grid } from '@chakra-ui/react';
+import { Container, Grid, Progress } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { Link } from '../api/link';
 import { LinkType } from '../models/link.interface';
@@ -19,7 +19,13 @@ const Home = () => {
     }
   }, [data]);
 
-  if (status === 'loading') return <h1>Loading...</h1>
+  if (status === 'loading') {
+    return (
+      <Container maxW="container.xl">
+        <Progress size="xs" isIndeterminate colorScheme={'whiteAlpha'} />
+      </Container>
+    )
+  }
 
   return (
     <Container maxW="container.xl">

@@ -85,7 +85,7 @@ const Login = () => {
               <FormErrorMessage>{errors.password && '비밀번호를 입력해주세요.'}</FormErrorMessage>
             </FormControl>
             <Stack spacing={6}>
-              <Button type={'submit'} colorScheme={'blue'} variant={'solid'}>로그인</Button>
+              <Button type={'submit'} colorScheme={'blue'} variant={'solid'} isLoading={mutation.isLoading}>로그인</Button>
             </Stack>
           </Stack>
         </Flex>

@@ -28,6 +28,8 @@ const NewLinkBox = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<LinkType>();
+
   const mutation = useMutation(
     link => Link.createLink(storedValue.authorization, link), {
       onMutate: async (link: LinkType) => {
@@ -39,7 +41,10 @@ const NewLinkBox = () => {
         }
         return { previousTodos }
       },
-      onSuccess: () => onClose(),
+      onSuccess: () => {
+        onClose();
+        reset();
+      },
       onError: (err, variables, context) => {
         if (context?.previousTodos) {
           queryClient.setQueryData<LinkType[]>('links', context.previousTodos)
@@ -51,7 +56,6 @@ const NewLinkBox = () => {
     }
   );
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LinkType>();
   const onSubmit: SubmitHandler<LinkType> = data => mutation.mutate(data);
 
   return (

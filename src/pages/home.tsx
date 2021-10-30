@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Progress, SimpleGrid } from '@chakra-ui/react';
+import { Container, Progress, Wrap } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { Link } from '../api/link';
 import { LinkType } from '../models/link.interface';
@@ -29,12 +29,12 @@ const Home = () => {
 
   return (
     <Container maxW="container.xl">
-      <SimpleGrid columns={4} spacing={10} minChildWidth={120} mt={5}>
+      <Wrap spacing={4}>
         <NewLinkBox />
         {
           links.map(link => <LinkBox key={link.id} link={link} />)
         }
-      </SimpleGrid>
+      </Wrap>
     </Container>
   )
 };

@@ -1,4 +1,4 @@
-# LinkCloud - Web
+# LinkCloud - Web (서버 repository 와 합쳐져서 더이상 사용하지 않습니다.)
 
 ## 링크 공유 서비스 ([웹버전](https://linkcloud.vercel.app/))
 
